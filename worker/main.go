@@ -12,7 +12,7 @@ import (
 
 func panicOnError(err error, message string) {
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintln(message, err))
 	}
 }
 
