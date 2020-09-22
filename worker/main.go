@@ -1,77 +1,62 @@
 package main
 
 import (
+	"bufio"
 	"context"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
-	"io"
+	"fmt"
+	"log"
 	"os"
+	"strings"
+	"worker/manager"
 )
 
-func main() {
-	if len(os.Args) < 2 {
-		panic("usage: worker imageName cmd...")
+func panicOnError(err error, message string) {
+	if err != nil {
+		panic(err)
 	}
-	imageName := os.Args[1]
-	cmd := os.Args[2:]
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+	m, err := manager.New()
+	panicOnError(err, "failed to create container manager")
 	ctx := context.Background()
 
-	// Create the client
-	cli, err := client.NewEnvClient()
-	if err != nil {
-		panic(err)
-	}
-
-	// pull the image
-	reader, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
-	if err != nil {
-		panic(err)
-	}
-	_, err = io.Copy(os.Stdout, reader)
-	if err != nil {
-		panic(err)
-	}
-
-	// Create the container
-	resp, err := cli.ContainerCreate(ctx, &container.Config{
-		Image: imageName,
-		Cmd:   cmd,
-	}, nil, nil, "")
-	if err != nil {
-		panic(err)
-	}
-
-	// Start the container
-	err = cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{})
-	if err != nil {
-		panic(err)
-	}
-
-	reader, err = cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{
-		ShowStdout: true,
-	})
-	if err != nil {
-		panic(err)
-	}
-	_, err = io.Copy(os.Stdout, reader)
-	if err != nil {
-		panic(err)
-	}
-
-	// Wait for the execution to finish
-	_, err = cli.ContainerWait(ctx, resp.ID)
-	if err != nil {
-		panic(err)
-	}
-
-	err = cli.ContainerRemove(ctx, resp.ID, types.ContainerRemoveOptions{})
-	if err != nil {
-		panic(err)
-	}
-
-	_, err = cli.ImageRemove(ctx, imageName, types.ImageRemoveOptions{})
-	if err != nil {
-		panic(err)
+	for {
+		fmt.Print("> ")
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			_ = m.StopContainer(ctx)
+			_ = m.Clean(ctx)
+			break
+		}
+		tokens := strings.Split(strings.TrimSuffix(line, "\n"), " ")
+		switch tokens[0] {
+		case "start":
+			if len(tokens) != 2 {
+				fmt.Println("usage: start <image-url>")
+			} else {
+				err = m.StartContainer(ctx, tokens[1])
+				if err != nil {
+					log.Println(err)
+				}
+			}
+		case "stop":
+			err = m.StopContainer(ctx)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			err = m.Clean(ctx)
+			if err != nil {
+				log.Println(err)
+			}
+		case "quit":
+			_ = m.StopContainer(ctx)
+			_ = m.Clean(ctx)
+			return
+		default:
+			fmt.Println("unknown command:", tokens[0])
+		}
 	}
 }
