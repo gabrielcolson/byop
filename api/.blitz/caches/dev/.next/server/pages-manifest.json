@@ -2,10 +2,11 @@
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
-  "/404": "pages/404.js",
   "/": "pages/index.js",
+  "/404": "pages/404.js",
   "/api/auth/mutations/login": "pages/api/auth/mutations/login.js",
   "/api/auth/mutations/logout": "pages/api/auth/mutations/logout.js",
   "/api/users/queries/getCurrentUser": "pages/api/users/queries/getCurrentUser.js",
-  "/api/task": "pages/api/task.js"
+  "/api/task": "pages/api/task.js",
+  "/api/task/[ID]": "pages/api/task/[ID].js"
 }
