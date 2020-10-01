@@ -1,0 +1,4 @@
+# Prisma Migrate lockfile v1
+
+20201001132421-initial-migration
+20201001134204-add-task-model
