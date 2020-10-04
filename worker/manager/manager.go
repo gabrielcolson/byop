@@ -20,15 +20,15 @@ type jobInfo struct {
 type containerManager struct {
 	dockerClient   *client.Client
 	currentJobInfo *jobInfo
-	status containerStatus
+	status         containerStatus
 }
 
 type containerStatus string
 
 const (
-	statusClean containerStatus = "CLEAN"
-	statusStarted = "STARTED"
-	statusStopped = "STOPPED"
+	statusClean   containerStatus = "CLEAN"
+	statusStarted                 = "STARTED"
+	statusStopped                 = "STOPPED"
 )
 
 func New() (*containerManager, error) {
@@ -39,7 +39,7 @@ func New() (*containerManager, error) {
 
 	return &containerManager{
 		dockerClient: cli,
-		status: statusClean,
+		status:       statusClean,
 	}, nil
 }
 
@@ -144,8 +144,8 @@ func (m *containerManager) Clean(ctx context.Context) error {
 		return err
 	}
 
-	// Remove image
-	//_, err = cli.ImageRemove(ctx, imageName, types.ImageRemoveOptions{})
+	//Remove image
+	//_, err = m.dockerClient.ImageRemove(ctx, m.currentJobInfo.imageUrl, types.ImageRemoveOptions{})
 	//if err != nil {
 	//	panic(err)
 	//}

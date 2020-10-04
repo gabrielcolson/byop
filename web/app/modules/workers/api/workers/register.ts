@@ -16,7 +16,6 @@ export default async function registerWorker(req: BlitzApiRequest, res: BlitzApi
   if (pendingTasks.length === 0) {
     return res.status(401).end()
   }
-
   const task = pendingTasks[0]
   await db.task.update({
     where: { id: task.id },
@@ -25,7 +24,7 @@ export default async function registerWorker(req: BlitzApiRequest, res: BlitzApi
       worker: {
         create: {
           ip,
-          status: "WORKING",
+          status: "WORKING"
         }
       }
     }
