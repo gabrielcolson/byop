@@ -10,7 +10,8 @@ export default async function getTasks(
   const tasks = await db.task.findMany({
     where: {
       owner: { id: ctx.session!.userId }
-    }
+    },
+    include: { worker: true }
   })
 
   return tasks

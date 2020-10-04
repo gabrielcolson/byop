@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "postgres"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -30,6 +30,7 @@ model Task {
   updatedAt DateTime @updatedAt
 
   imageURL String
+  ip       String?
   status   TaskStatus
   owner    User       @relation(fields: [ownerId], references: [id])
   ownerId  Int
@@ -46,9 +47,14 @@ model Worker {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  ip     String
-  task   Task   @relation(fields: [taskId], references: [id])
-  taskId Int
+  status WorkerStatus
+  task   Task?        @relation(fields: [taskId], references: [id])
+  taskId Int?
+}
+
+enum WorkerStatus {
+  PENDING
+  WORKING
 }
 
 model Session {

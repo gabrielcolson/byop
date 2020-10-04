@@ -1,7 +1,7 @@
 import { AppProps, ErrorComponent, useRouter, Router } from "blitz"
 import { ErrorBoundary, FallbackProps } from "react-error-boundary"
 import { queryCache } from "react-query"
-import { CSSReset, ThemeProvider, theme } from "@chakra-ui/core"
+import { CSSReset, ThemeProvider, theme, ColorModeProvider } from "@chakra-ui/core"
 
 export default function App({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
@@ -18,8 +18,10 @@ export default function App({ Component, pageProps }: AppProps) {
       }}
     >
       <ThemeProvider theme={theme}>
-        <CSSReset />
-        {getLayout(<Component {...pageProps} />)}
+        <ColorModeProvider>
+          <CSSReset />
+          {getLayout(<Component {...pageProps} />)}
+        </ColorModeProvider>
       </ThemeProvider>
     </ErrorBoundary>
   )

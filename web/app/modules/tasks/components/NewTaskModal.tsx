@@ -1,6 +1,5 @@
 import TextInput from "app/components/TextInput"
 import { CreateTaskInput, CreateTaskInputType } from "app/modules/tasks/validations"
-import { useRouter } from "blitz"
 import {
   Button,
   Modal,
@@ -20,8 +19,6 @@ export interface NewTaskModalProps {
 }
 
 const NewTaskModal = ({ isOpen, onClose }: NewTaskModalProps): JSX.Element => {
-  const router = useRouter()
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} {...{ style: { paddingRight: 10, paddingLeft: 10 } }}>
       <ModalOverlay />
@@ -30,8 +27,7 @@ const NewTaskModal = ({ isOpen, onClose }: NewTaskModalProps): JSX.Element => {
         initialValues={{ imageURL: "" }}
         onSubmit={async (values, { setStatus }) => {
           try {
-            const task = await createTask(values)
-            await router.push(`/tasks/${task.id}`)
+            await createTask(values)
             onClose()
           } catch (error) {
             setStatus(error.toString())
@@ -68,7 +64,7 @@ const NewTaskModal = ({ isOpen, onClose }: NewTaskModalProps): JSX.Element => {
 
             <ModalFooter>
               <Button isLoading={isSubmitting} variantColor="teal" mr={3} type="submit">
-                Create Space
+                Add Task
               </Button>
               <Button onClick={onClose}>Cancel</Button>
             </ModalFooter>

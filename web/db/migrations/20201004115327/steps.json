@@ -1,0 +1,17 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "DeleteField",
+      "model": "Task",
+      "field": "ip"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Worker",
+      "field": "ip",
+      "type": "String",
+      "arity": "Optional"
+    }
+  ]
+}

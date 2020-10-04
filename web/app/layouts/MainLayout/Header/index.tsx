@@ -14,6 +14,8 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  useColorMode,
+  Text
 } from "@chakra-ui/core"
 import { Suspense } from "react"
 import React from "react"
@@ -21,7 +23,7 @@ import React from "react"
 const AvatarMenuButton = (): JSX.Element => {
   const session = useSession()
   const [user] = useQuery(getCurrentUser, null, {
-    enabled: !!session.userId && !session.isLoading,
+    enabled: !!session.userId && !session.isLoading
   })
 
   if (session.isLoading) {
@@ -62,6 +64,7 @@ const AvatarMenuButton = (): JSX.Element => {
 
 const Header = (): JSX.Element => {
   const router = useRouter()
+  const { colorMode, toggleColorMode } = useColorMode()
 
   async function handleLogout(): Promise<void> {
     await logout()
@@ -69,12 +72,12 @@ const Header = (): JSX.Element => {
   }
 
   return (
-    <SectionContainer color="white" bg="teal.500" align="center" py={3}>
+    <SectionContainer color="white" bg={colorMode === "light" ? "teal.500" : "black"} align="center" py={3}>
       <Flex flex={1} height="40px" align="center">
         <Flex align="center">
           <Link href={"/"}>
             <Heading as="a" cursor="pointer" size="md">
-              BYOP
+              <Text>BYOP</Text>
             </Heading>
           </Link>
         </Flex>
@@ -86,7 +89,7 @@ const Header = (): JSX.Element => {
             <Box color="black">
               <AvatarMenuButton />
               <MenuList placement="bottom-end" onClick={onClose}>
-                <MenuItem isDisabled>Theme</MenuItem>
+                <MenuItem onClick={() => toggleColorMode()}>Theme: {colorMode}</MenuItem>
 
                 <MenuDivider />
 

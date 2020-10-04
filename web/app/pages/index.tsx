@@ -4,16 +4,19 @@ import getTasks from "../modules/tasks/queries/getTasks"
 import { Suspense } from "react"
 import TitleSectionContainer from "../components/TitleSectionContainer"
 import SectionContainer from "../components/SectionContainer"
-import { Heading, Button, useDisclosure, Text, Stack, Divider } from "@chakra-ui/core"
+import { Heading, Button, useDisclosure, Text, Stack, Divider, Flex } from "@chakra-ui/core"
 import NewTaskModal from "../modules/tasks/components/NewTaskModal"
 
 const TaskList = () => {
-  const [tasks] = useQuery(getTasks, null)
+  const [tasks] = useQuery(getTasks, null, { refetchInterval: 1000 })
   return (
     <Stack w="full" spacing="50px">
       {tasks.map((task) => [
         (<Stack spacing="20px" w="full" height="50px">
-          <Heading as="h4" size="md">{task.imageURL}</Heading>
+          <Flex justify="space-between">
+            <Heading as="h4" size="md">{task.imageURL}</Heading>
+            <Button as="a" href={task.worker?.ip} isDisabled={!task.worker}>Open app</Button>
+          </Flex>
           <Text>Started on {task.createdAt.toLocaleString()}</Text>
         </Stack>),
         (<Divider />)
