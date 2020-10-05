@@ -15,7 +15,7 @@ const TaskList = () => {
         (<Stack spacing="20px" w="full" height="50px">
           <Flex justify="space-between">
             <Heading as="h4" size="md">{task.imageURL}</Heading>
-            <Button as="a" href={task.worker?.ip} isDisabled={!task.worker}>Open app</Button>
+            <Button as="a" {...{ href: "http://localhost" }} isDisabled={!task.worker}>Open app</Button>
           </Flex>
           <Text>Started on {task.createdAt.toLocaleString()}</Text>
         </Stack>),

@@ -24,7 +24,6 @@ export default async function registerWorker(req: BlitzApiRequest, res: BlitzApi
       worker: {
         create: {
           ip,
-          status: "WORKING"
         }
       }
     }
